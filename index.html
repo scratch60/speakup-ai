@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<meta name="description" content="SpeakUp AI — daily English and Nepali communication practice.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>SpeakUp AI</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#121d30;--panel2:#19263c;--text:#eef4ff;--muted:#aab8ce;--blue:#63b3ff;--green:#65d6a4;--line:#293951}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#172943 0,#0b1220 48%);color:var(--text);font:16px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{padding:22px 18px 12px;max-width:760px;margin:auto}h1{margin:0;font-size:28px;letter-spacing:-.7px}.tag{color:var(--muted);margin:5px 0 0;font-size:14px}
+main{max-width:760px;margin:auto;padding:12px 16px 40px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 11px;color:var(--muted);font-size:12px}
+nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0}.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:11px 7px;border-radius:12px;font-weight:650}.tab.active{background:#193456;color:#fff;border-color:#3975ad}
+.card{background:linear-gradient(150deg,var(--panel),#101a2b);border:1px solid var(--line);border-radius:18px;padding:17px;margin:12px 0;box-shadow:0 12px 30px #0002}
+h2{font-size:19px;margin:0 0 10px}p{line-height:1.5}.muted{color:var(--muted)}label{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px}
+select,textarea,input{width:100%;border:1px solid var(--line);background:#0b1525;color:var(--text);border-radius:12px;padding:12px;font:inherit}
+textarea{min-height:100px;resize:vertical}button{cursor:pointer;border:0;border-radius:12px;padding:12px 15px;background:var(--blue);color:#061321;font-weight:750;font-size:14px}
+button.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}button:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.bubble{padding:12px 14px;border-radius:14px;margin:9px 0;line-height:1.5;white-space:pre-wrap}.coach{background:#1a2b43;border:1px solid #2b4565}.you{background:#153b35;border:1px solid #286454;margin-left:22px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:var(--panel2);border-radius:13px;padding:13px}.stat strong{font-size:23px;display:block}.hidden{display:none!important}
+.progress{height:9px;background:#26364d;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;background:var(--green);width:0}
+.small{font-size:12px;color:var(--muted)}.feedback{border-left:3px solid var(--green);padding:10px 12px;background:#102a29;border-radius:8px;margin-top:12px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:18px}
+@media(min-width:600px){main{padding-top:20px}.grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="top"><div><h1>SpeakUp <span style="color:var(--blue)">AI</span></h1><p class="tag" id="tagline">Your daily communication practice partner</p></div><span class="pill">FIRST VERSION · FREE</span></div></header>
+<main>
+<nav>
+<button class="tab active" data-tab="practice" id="tabPractice">Practice</button>
+<button class="tab" data-tab="progress" id="tabProgress">Progress</button>
+<button class="tab" data-tab="settings" id="tabSettings">Settings</button>
+</nav>
+
+<section id="practice">
+<div class="card">
+<h2 id="welcome">Let's practise a conversation 👋</h2>
+<p class="muted" id="intro">Choose a situation, reply naturally, and get simple coaching. Mistakes are welcome.</p>
+<label for="language" id="languageLabel">Practice language</label>
+<select id="language"><option value="en">English</option><option value="ne">नेपाली</option></select>
+<label for="scenario" id="scenarioLabel">Choose a situation</label>
+<select id="scenario">
+<option value="friend">Making a new friend</option><option value="girl">Respectfully talking to someone you like</option><option value="shop">Talking to a shopkeeper</option><option value="interview">Job interview</option><option value="public">Public speaking</option><option value="daily">Talking about your day</option>
+</select>
+<div class="actions"><button id="start">Start practice</button><button class="secondary" id="reset">Reset chat</button></div>
+</div>
+<div class="card">
+<h2 id="conversationTitle">Conversation</h2>
+<div id="chat" aria-live="polite"><div class="bubble coach" id="starter">Hey! I'm your practice partner. Pick a situation and tap Start practice.</div></div>
+<label for="reply" id="replyLabel">Your reply</label>
+<textarea id="reply" placeholder="Type what you would naturally say..."></textarea>
+<div class="actions"><button id="send">Send reply</button><button class="secondary" id="speak">🔊 Read coach message</button><button class="secondary" id="listen">🎙️ Speech to text</button></div>
+<div id="feedback" class="feedback hidden"></div>
+<p class="small" id="privacy">Your practice history stays on this device. This first version does not send your messages to an AI service.</p>
+</div>
+</section>
+
+<section id="progress" class="hidden">
+<div class="card"><h2 id="progressTitle">Your progress</h2><div class="grid">
+<div class="stat"><strong id="sessions">0</strong><span class="small" id="sessionsLabel">Practice sessions</span></div>
+<div class="stat"><strong id="replies">0</strong><span class="small" id="repliesLabel">Replies sent</span></div>
+<div class="stat"><strong id="streak">0</strong><span class="small" id="streakLabel">Practice days</span></div>
+</div><p class="muted" id="encourage">Small daily practice builds confidence.</p><div class="progress"><span id="bar"></span></div><p class="small" id="goal">Daily goal: 5 replies</p></div>
+<div class="card"><h2 id="tipsTitle">Your next step</h2><p id="nextTip">Try one short conversation today with someone you already feel comfortable around.</p></div>
+</section>
+
+<section id="settings" class="hidden">
+<div class="card"><h2 id="settingsTitle">Settings</h2>
+<label for="uiLanguage" id="uiLabel">App language</label><select id="uiLanguage"><option value="en">English</option><option value="ne">नेपाली</option></select>
+<p class="muted" id="settingsNote">Voice features depend on your browser and device. For best results, use Chrome on Android.</p>
+<button class="secondary" id="clear">Clear my practice progress</button>
+</div>
+</section>
+<footer>SpeakUp AI · Practice kindly. Improve daily.</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let lang='en',scenario='friend',started=false,lastCoach='';
+let data=JSON.parse(localStorage.getItem('speakupData')||'{"sessions":0,"replies":0,"days":[],"lastDate":""}');
+const prompts={
+en:{friend:"Hey! Nice to meet you. What do you enjoy doing in your free time?",girl:"Hi! I don't think we've met. I'm ____. What's your name? (Keep it friendly and respectful.)",shop:"Hello! What can I help you find today?",interview:"Welcome! Could you tell me a little about yourself?",public:"Imagine you are introducing yourself to a small group. Start with your name and one thing you enjoy.",daily:"Hey! How are you today? What have you been up to?"},
+ne:{friend:"नमस्ते! भेटेर खुशी लाग्यो। फुर्सदको समयमा तिमीलाई के गर्न मन पर्छ?",girl:"नमस्ते! हाम्रो पहिले चिनजान भएको छैन जस्तो लाग्यो। मेरो नाम ____ हो। तिम्रो नाम के हो? (सभ्य र सहज रहनुहोस्।)",shop:"नमस्ते! तपाईंलाई के सामान चाहिएको हो?",interview:"स्वागत छ! आफ्नो बारेमा छोटकरीमा बताउन सक्नुहुन्छ?",public:"सानो समूहमा आफ्नो परिचय दिँदै हुनुहुन्छ भनेर सोच्नुहोस्। आफ्नो नाम र आफूलाई मन पर्ने एउटा कुरा भन्नुहोस्।",daily:"नमस्ते! आज कस्तो छ? आज के गर्दै थियौ?"}
+};
+const copy={
+en:{tag:"Your daily communication practice partner",welcome:"Let's practise a conversation 👋",intro:"Choose a situation, reply naturally, and get simple coaching. Mistakes are welcome.",language:"Practice language",scenario:"Choose a situation",conversation:"Conversation",reply:"Your reply",placeholder:"Type what you would naturally say...",privacy:"Your practice history stays on this device. This first version does not send your messages to an AI service.",sent:"You",coach:"Coach",empty:"Write a reply first.",feedback:"Coaching tip",progress:"Your progress",sessions:"Practice sessions",replies:"Replies sent",streak:"Practice days",encourage:"Small daily practice builds confidence.",goal:"Daily goal: 5 replies",tips:"Your next step",next:"Try one short conversation today with someone you already feel comfortable around.",settings:"Settings",app:"App language",note:"Voice features depend on your browser and device. For best results, use Chrome on Android.",cleared:"Your progress has been cleared.",good:"Good effort! You answered. Now keep the conversation going by reacting to one detail and asking one open question.",short:"Nice start. Try adding one detail about yourself, then ask an open question such as 'What do you enjoy most about it?'",question:"Try not to ask only yes/no questions. Ask 'what', 'how' or 'why' to invite a longer answer.",thanks:"Thanks for practising. Remember: listen, react, then ask a natural follow-up."},
+ne:{tag:"दैनिक कुराकानी अभ्यास गर्ने साथी",welcome:"आउनुहोस्, कुराकानी अभ्यास गरौँ 👋",intro:"एउटा परिस्थिति छान्नुहोस्, स्वाभाविक जवाफ दिनुहोस् र सुझाव पाउनुहोस्। गल्ती गर्न डराउनु पर्दैन।",language:"अभ्यासको भाषा",scenario:"परिस्थिति छान्नुहोस्",conversation:"कुराकानी",reply:"तपाईंको जवाफ",placeholder:"तपाईं स्वाभाविक रूपमा जे भन्नुहुन्थ्यो, लेख्नुहोस्...",privacy:"तपाईंको अभ्यास यही डिभाइसमा रहन्छ। यो पहिलो संस्करणले तपाईंको सन्देश AI सेवामा पठाउँदैन।",sent:"तपाईं",coach:"कोच",empty:"पहिले जवाफ लेख्नुहोस्।",feedback:"सुधारको सुझाव",progress:"तपाईंको प्रगति",sessions:"अभ्यास सत्र",replies:"पठाएका जवाफ",streak:"अभ्यास गरेका दिन",encourage:"हरेक दिनको सानो अभ्यासले आत्मविश्वास बढाउँछ।",goal:"दैनिक लक्ष्य: ५ जवाफ",tips:"अबको कदम",next:"आज आफूलाई सहज लाग्ने व्यक्तिसँग छोटो कुराकानी गर्ने प्रयास गर्नुहोस्।",settings:"सेटिङ",app:"एपको भाषा",note:"आवाजका सुविधाहरू तपाईंको ब्राउजर र डिभाइसमा निर्भर हुन्छन्। Android मा Chrome प्रयोग गर्नु राम्रो हुन्छ।",cleared:"तपाईंको प्रगति मेटाइएको छ।",good:"राम्रो प्रयास! अब उनीहरूको जवाफको एउटा कुरा समातेर प्रतिक्रिया दिनुहोस् र खुला प्रश्न सोध्नुहोस्।",short:"राम्रो सुरुवात। आफ्नो बारेमा एउटा कुरा थप्नुहोस् अनि 'तिमीलाई त्यसमा सबैभन्दा के मन पर्छ?' जस्तो खुला प्रश्न सोध्नुहोस्।",question:"हो/होइनमा सकिने प्रश्न मात्र नसोध्नुहोस्। लामो जवाफका लागि 'के', 'कसरी' वा 'किन' प्रयोग गर्नुहोस्।",thanks:"अभ्यास गरेकोमा धन्यवाद। सम्झनुहोस्: ध्यान दिएर सुन्नुहोस्, प्रतिक्रिया दिनुहोस्, अनि स्वाभाविक अर्को प्रश्न सोध्नुहोस्।"}
+};
+function t(k){return copy[lang][k]||k}
+function save(){localStorage.setItem('speakupData',JSON.stringify(data));renderProgress()}
+function renderProgress(){$('sessions').textContent=data.sessions;$('replies').textContent=data.replies;$('streak').textContent=data.days.length;$('bar').style.width=Math.min(100,(data.replies%6)/5*100)+'%'}
+function setLang(v){lang=v;const c=copy[lang];$('tagline').textContent=c.tag;$('welcome').textContent=c.welcome;$('intro').textContent=c.intro;$('languageLabel').textContent=c.language;$('scenarioLabel').textContent=c.scenario;$('conversationTitle').textContent=c.conversation;$('replyLabel').textContent=c.reply;$('reply').placeholder=c.placeholder;$('privacy').textContent=c.privacy;$('progressTitle').textContent=c.progress;$('sessionsLabel').textContent=c.sessions;$('repliesLabel').textContent=c.replies;$('streakLabel').textContent=c.streak;$('encourage').textContent=c.encourage;$('goal').textContent=c.goal;$('tipsTitle').textContent=c.tips;$('nextTip').textContent=c.next;$('settingsTitle').textContent=c.settings;$('uiLabel').textContent=c.app;$('settingsNote').textContent=c.note}
+function addBubble(text,who){const d=document.createElement('div');d.className='bubble '+(who==='you'?'you':'coach');d.textContent=text;$('chat').appendChild(d);$('chat').scrollTop=$('chat').scrollHeight;if(who!=='you')lastCoach=text}
+function start(){scenario=$('scenario').value;started=true;$('chat').innerHTML='';addBubble(prompts[lang][scenario],'coach');data.sessions++;save();$('feedback').classList.add('hidden')}
+function send(){const value=$('reply').value.trim();if(!value){$('feedback').textContent=t('empty');$('feedback').classList.remove('hidden');return}if(!started)start();addBubble(value,'you');$('reply').value='';data.replies++;const today=new Date().toISOString().slice(0,10);if(!data.days.includes(today))data.days.push(today);save();let tip=value.length<35?t('short'):t('good');if(/^(yes|no|yeah|yep|हजुर|हो|होइन)[.! ]*$/i.test(value))tip=t('question');$('feedback').textContent=t('feedback')+': '+tip;$('feedback').classList.remove('hidden');let follow=lang==='ne'?'त्यो रोचक छ! त्यसबारे अलि थप बताउन सक्छौ?':'That sounds interesting! Could you tell me a little more about that?';addBubble(follow,'coach')}
+function reset(){started=false;$('chat').innerHTML='';addBubble('Hey! Pick a situation and tap Start practice.','coach');$('feedback').classList.add('hidden')}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['practice','progress','settings'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));renderProgress()});
+$('start').onclick=start;$('send').onclick=send;$('reset').onclick=reset;
+$('language').onchange=e=>{lang=e.target.value;$('uiLanguage').value=lang;setLang(lang);reset()};
+$('uiLanguage').onchange=e=>{$('language').value=e.target.value;setLang(e.target.value);reset()};
+$('speak').onclick=()=>{if(!lastCoach)return; if(!('speechSynthesis'in window)){alert('Text-to-speech is not supported in this browser.');return}let u=new SpeechSynthesisUtterance(lastCoach);u.lang=lang==='ne'?'ne-NP':'en-US';speechSynthesis.cancel();speechSynthesis.speak(u)};
+$('listen').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('Speech recognition is not supported here. Try Chrome on Android.');return}let r=new SR();r.lang=lang==='ne'?'ne-NP':'en-US';r.onresult=e=>$('reply').value=e.results[0][0].transcript;r.onerror=()=>alert('Microphone recognition failed. Check browser permission.');r.start()};
+$('clear').onclick=()=>{if(confirm('Clear all saved practice progress on this device?')){data={sessions:0,replies:0,days:[],lastDate:''};save();alert(t('cleared'))}};
+setLang('en');renderProgress();
+if('serviceWorker'in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body></html>
